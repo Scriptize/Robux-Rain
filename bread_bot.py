@@ -1,5 +1,6 @@
 import hikari
 import lightbulb
+import datetime
 
 
 bot = lightbulb.BotApp(token='MTAwNjcxNzU1NzAwNjQwOTc4OQ.GpzEJD.U-nE7MFddrROwwRm1zZPXyq-NzeXmsEhlZnTF0', default_enabled_guilds=(1006722736074264677))
@@ -12,7 +13,7 @@ async def on_started(event):
 @lightbulb.command('ping', 'Says pong!')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ping(ctx):
-    await ctx.respond('Pong!')
+    await ctx.respond('```Pong!```')
 
 
 @bot.command
@@ -35,3 +36,5 @@ async def add(ctx):
     await ctx.respond(ctx.options.num1 + ctx.options.num2)
 
 bot.run()
+
+#TODO IN 2 DAYS: MAKE A 5 MIN TIMER THAT ANNOUNCES WHEN DONES
