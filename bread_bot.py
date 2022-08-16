@@ -35,6 +35,37 @@ async def subcommand(ctx):
 async def add(ctx):
     await ctx.respond(ctx.options.num1 + ctx.options.num2)
 
-bot.run()
+@bot.command
+@lightbulb.command('everyone', 'pings everyone')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def everyone(ctx, mentions_everyone=True):
+    await ctx.respond('@everyone')
 
 #TODO IN 2 DAYS: MAKE A 5 MIN TIMER THAT ANNOUNCES WHEN DONES
+
+#1) Learn embeds
+#2) Make timer with embed
+
+#EMBEDS
+rbux_val= 200
+
+embed = hikari.Embed(title="💸 Enter the ROBUX rain! 💸",
+                     description="**RAIN AMOUNT:**" + str(rbux_val) + "\n**RAIN ENDS: ** (TIMER_HERE)\n\nReact to enter the rain!",
+                     color='#FFFF00'
+) 
+                    
+embed.set_footer("ROBUX RAIN started by (DISCORDNAMEHERE)")
+
+@bot.command
+@lightbulb.command('embed', 'prints embed!')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def print_embed(ctx):
+    await ctx.respond(embed)
+
+bot.run()
+
+#TODO
+
+# hardcode timer variable unix timestamp for test
+# make lightbulb.option for robux amount and timer
+# start working with selenim and chromedriver for loigging
