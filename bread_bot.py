@@ -1,7 +1,9 @@
 import hikari
 import lightbulb
 import datetime
-
+from datetime import timedelta
+import time
+ 
 
 bot = lightbulb.BotApp(token='MTAwNjcxNzU1NzAwNjQwOTc4OQ.GpzEJD.U-nE7MFddrROwwRm1zZPXyq-NzeXmsEhlZnTF0', default_enabled_guilds=(1006722736074264677))
 
@@ -48,9 +50,15 @@ async def everyone(ctx, mentions_everyone=True):
 
 #EMBEDS
 rbux_val= 200
+rain_start = datetime.datetime.now()
+rain_end = rain_start + timedelta(minutes=5)
+
+"<t:"+ str(int((time.mktime(rain_end.timetuple()))))+ ":R>"
 
 embed = hikari.Embed(title="💸 Enter the ROBUX rain! 💸",
-                     description="**RAIN AMOUNT:**" + str(rbux_val) + "\n**RAIN ENDS: ** (TIMER_HERE)\n\nReact to enter the rain!",
+                     description="**RAIN AMOUNT:**" + str(rbux_val) +
+                                 "\n**RAIN ENDS: **" + "<t:"+ str(int((time.mktime(rain_end.timetuple()))))+ ":R>" +
+                                 "\n\nReact to enter the rain!,",
                      color='#FFFF00'
 ) 
                     
@@ -64,7 +72,6 @@ async def print_embed(ctx):
 
 bot.run()
 
-#TODO
 
 # hardcode timer variable unix timestamp for test
 # make lightbulb.option for robux amount and timer
