@@ -13,8 +13,8 @@ async def on_started(event):
 
 
 @bot.command
-@lightbulb.option('amount','how much robux?',type=int)
-@lightbulb.option('time','how many minutes?',type=int)
+@lightbulb.option('amount','how much robux?',type=int, min_value= 500)
+@lightbulb.option('time','how many minutes?',type=int, min_value= 2)
 @lightbulb.command('startrain', 'starts giveaway')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def print_embed(ctx):
