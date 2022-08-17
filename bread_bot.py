@@ -13,17 +13,19 @@ async def on_started(event):
 
 
 @bot.command
+@lightbulb.option('amount','how much robux?',type=int)
+@lightbulb.option('time','how many minutes?',type=int)
 @lightbulb.command('startrain', 'starts giveaway')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def print_embed(ctx):
     
-    rbux_val= 200
+    rbux_val= ctx.options.amount
     rain_start = datetime.datetime.now()
-    rain_end = rain_start + timedelta(minutes=5)
+    rain_end = rain_start + timedelta(minutes=ctx.options.time)
 
 #Initialize Embed
     embed = hikari.Embed(title="💸 Enter the ROBUX rain! 💸",
-                        description="**RAIN AMOUNT:**" + str(rbux_val) +
+                        description="**RAIN AMOUNT:** " + str(rbux_val) +
                                  "\n**RAIN ENDS: **" + "<t:"+ str(int((time.mktime(rain_end.timetuple()))))+ ":R>" +
                                  "\n\nReact to enter the rain!,",
                         color='#FFFF00'
