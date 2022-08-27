@@ -3,14 +3,17 @@ import lightbulb
 import datetime
 from datetime import timedelta
 import time
- 
+from bot_config import bot
 
-bot = lightbulb.BotApp(token='MTAwNjcxNzU1NzAwNjQwOTc4OQ.GpzEJD.U-nE7MFddrROwwRm1zZPXyq-NzeXmsEhlZnTF0', default_enabled_guilds=(1006722736074264677))
 
 @bot.listen(hikari.StartedEvent)
 async def on_started(event):
     print('Bot has started')
 
+@bot.listen(hikari.ReactionAddEvent) 
+async def get_reaction_user(event):
+    if not event.is_for_emoji('U+1F4B0'):
+        
 
 @bot.command
 @lightbulb.option('amount','how much robux?',type=int, min_value= 500)
@@ -33,8 +36,15 @@ async def print_embed(ctx):
                     
     embed.set_footer("ROBUX RAIN started by" + " " + ctx.author.username)
     await ctx.respond(embed)
+    
+   
 
 
+#TODO
+
+#1. Make a todo for the next steps
+
+#-----------------------------------------------------------------------------------------
 #@bot.command
 #@lightbulb.command('ping', 'Says pong!')
 #@lightbulb.implements(lightbulb.SlashCommand)
