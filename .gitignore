@@ -2,3 +2,4 @@ venv
 test
 __pycache__
 bot_config.py
+bot_config
