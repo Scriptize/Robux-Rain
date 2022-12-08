@@ -7,13 +7,5 @@ import time
 rain_start = datetime.datetime.now()
 rain_end = rain_start + timedelta(minutes=5)
  
- 
-# displaying unix timestamp after conversion
-print("unix_timestamp => ",
-     "<t:"+ str(int((time.mktime(rain_end.timetuple()))))+ ":R>")
-      
+print(int(rain_end.strftime("%Y%m%d%H%M%S")))
 
-rain_start = datetime.datetime.now()
-rain_end = rain_start + timedelta(minutes=5)
-
-"<t:"+ str(int((time.mktime(rain_end.timetuple()))))+ ":R>"
