@@ -1,2 +1,2 @@
 # Robux_Rain
-Bot that logs into rblx acc thru cookie and gives out r$ through gamepass
+Discord Bot that logs into RBLX acc through cookie and payouts robux using Roblox's API endpoints
