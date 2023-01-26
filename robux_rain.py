@@ -81,19 +81,24 @@ async def start_rain(message):
         nonlocal counter # make counter usable in nested function
         
         if event.message.author.id in listen_list: # if author of message is a winner
-            listen_list.remove(event.message.author.id) # remove them from winner list
-            new_recipients.append({'recipientId': member_list[event.message.content], # recip id is the value of the user key from the member list
-                                     'recipientType': 'User',
-                                      'amount': int(winner_dict[str(event.message.author.id)]) # reward amt is the value of the key that reps the replier disc id
-                                      }) # add robux recipient to list to use to extend recipient payload
-            
-            await event.message.author.send("Successfully recieved username!")
-            counter -= 1
+            try: #try to add recepient to payload
+                new_recipients.append({'recipientId': member_list[event.message.content], # recip id is the value of the user key from the member list
+                                        'recipientType': 'User',
+                                        'amount': int(winner_dict[str(event.message.author.id)]) # reward amt is the value of the key that reps the replier disc id
+                                        }) # add robux recipient to list to use to extend recipient payload
+                
+            except KeyError: # if the username is not in the group
+                await event.message.author.send("This user is either not in the group **or** spelled incorrectly\n Try again.")
+
+            else: #if it is,
+                await event.message.author.send("Successfully recieved username!")
+                listen_list.remove(event.message.author.id) # remove them from winner list
+                counter -= 1
+
             if counter == 0: # If everyone responds
                 bot.unsubscribe(hikari.DMMessageCreateEvent, get_reply) # Stop listening for responses
                 payload["Recipients"].extend(new_recipients) #Add winners to payload
-                payout = rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
-
+                rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
 
 bot.run()
                 
