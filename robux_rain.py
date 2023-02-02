@@ -16,7 +16,7 @@ bot = lightbulb.BotApp(token='your token goes here',intents=hikari.Intents.DM_ME
 @lightbulb.command('version', 'responds with current version')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def version(ctx):
-    await ctx.respond("Robux Rain version: **ALPHA**")
+    await ctx.respond("Robux Rain version: 1.1 **ALPHA**")
 
 @bot.command()
 @lightbulb.option('amount','how much robux?',type=int, min_value= 1)
