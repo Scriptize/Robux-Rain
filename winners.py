@@ -1,4 +1,5 @@
 import random
+
 def split_prize_pool(prize_pool, people):
   # Calculate the total number of shares
   shares = len(people)
@@ -13,13 +14,10 @@ def split_prize_pool(prize_pool, people):
     remaining_people = shares - i
 
     # Calculate the maximum prize amount that can be assigned to the current person
-    max_prize_amount = remaining_prize_pool - (remaining_people - 1)
+    max_prize_amount = remaining_prize_pool // remaining_people
 
     # Assign a random prize amount to the current person, ensuring that it is positive and does not exceed the maximum prize amount
-    try:
-      prize_amounts[i] = random.randint(1, max_prize_amount)
-    except ValueError:
-      prize_amounts[i] = max_prize_amount
+    prize_amounts[i] = random.randint(1, max_prize_amount)
 
   # Distribute the remaining prize amount evenly among the people, if necessary
   remaining_prize_pool = prize_pool - sum(prize_amounts)
@@ -32,7 +30,7 @@ def split_prize_pool(prize_pool, people):
   for i, person in enumerate(people):
     final_prize_amounts[person] = prize_amounts[i]
 
-  # Sort the dictionary of final prize amounts in descending order
+  # Sort the dictionary of final prize amounts in ascending order
   sorted_prize_amounts = sorted(final_prize_amounts.items(), key=lambda x: x[1], reverse=True)
 
   # Create a list of strings in the desired format
@@ -42,7 +40,6 @@ def split_prize_pool(prize_pool, people):
 
   # Return the list of strings
   return result
-
 #This function uses a a modified version of the "knapsack" algorithm, which is a well-known algorithm for solving the problem of selecting a set of items with the highest total value, subject to the constraint that the total weight of the items does not exceed a given capacity.
 
 def dictize(string):

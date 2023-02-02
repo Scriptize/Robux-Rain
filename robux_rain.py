@@ -11,6 +11,13 @@ from rblx_api import rbx_request
 
 bot = lightbulb.BotApp(token='your token goes here',intents=hikari.Intents.DM_MESSAGES, default_enabled_guilds=(guild_id))
 
+
+@bot.command()
+@lightbulb.command('version', 'responds with current version')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def version(ctx):
+    await ctx.respond("Robux Rain version: **ALPHA**")
+
 @bot.command()
 @lightbulb.option('amount','how much robux?',type=int, min_value= 1)
 @lightbulb.option('time','how many minutes?',type=float, min_value= .5)
@@ -43,8 +50,11 @@ async def start_rain(message):
     member_data.pop("nextPageCursor") #remove kv pairs for clean dict comphrehension
     member_data.pop("previousPageCursor")
     member_list = {item['user']['username'] : item['user']['userId'] for item in member_data['data']} # create user:id pairs
+    member_names = {item['user']['username'] for item in member_data['data']} # users 
+    group_req = rbx_request("GET", f"https://groups.roblox.com/v1/groups/{message.options.groupid}")
+    group_info = group_req.json()
 
-   
+
 
 #Initialize Embed
     start_embed = hikari.Embed(title="💸 Enter the ROBUX rain! 💸",  
@@ -81,24 +91,30 @@ async def start_rain(message):
         nonlocal counter # make counter usable in nested function
         
         if event.message.author.id in listen_list: # if author of message is a winner
-            try: #try to add recepient to payload
+            try:
                 new_recipients.append({'recipientId': member_list[event.message.content], # recip id is the value of the user key from the member list
                                         'recipientType': 'User',
                                         'amount': int(winner_dict[str(event.message.author.id)]) # reward amt is the value of the key that reps the replier disc id
                                         }) # add robux recipient to list to use to extend recipient payload
                 
-            except KeyError: # if the username is not in the group
-                await event.message.author.send("This user is either not in the group **or** spelled incorrectly\n Try again.")
+            except KeyError:
+                await event.message.author.send("This user is either uneligible for payout **or** spelled incorrectly. Try again.")
+                await event.message.author.send(f'Alternatively, if you **are not** in the group, "{group_info["name"]}" enter one of these users: \n {member_names}')
 
-            else: #if it is,
+            else:
                 await event.message.author.send("Successfully recieved username!")
                 listen_list.remove(event.message.author.id) # remove them from winner list
                 counter -= 1
+                payload["Recipients"].extend(new_recipients) #Add winners to payload
+                payout = rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
+                await event.message.author.send("Successfully paid out robux!")
+                new_recipients = []
+                payload["Recipients"] = []
+                
 
             if counter == 0: # If everyone responds
                 bot.unsubscribe(hikari.DMMessageCreateEvent, get_reply) # Stop listening for responses
-                payload["Recipients"].extend(new_recipients) #Add winners to payload
-                rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
+                await message.respond("Giveaway Complete!")
 
 bot.run()
                 
