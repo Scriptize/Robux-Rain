@@ -16,7 +16,7 @@ bot = lightbulb.BotApp(token='your token goes here',intents=hikari.Intents.DM_ME
 @lightbulb.command('version', 'responds with current version')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def version(ctx):
-    await ctx.respond("Robux Rain version: 1.1 **ALPHA**")
+    await ctx.respond("Robux Rain version: 1.2 **ALPHA**")
 
 @bot.command()
 @lightbulb.option('amount','how much robux?',type=int, min_value= 1)
@@ -66,11 +66,13 @@ async def start_rain(message):
     start_embed.set_footer("ROBUX RAIN started by" + " " + message.author.username) # set footer
     sent_embed = await message.respond(start_embed) # message object
     embed_msg = await sent_embed.message()
+    await bot.rest.add_reaction(channel_id, embed_msg, "💰")
     await asyncio.sleep(endtime_int) # wait for the end of a timer(endtime_int)
     users = await bot.rest.fetch_reactions_for_emoji(channel_id, embed_msg, "💰") # collect users reactions to message object with moneybag emoji
     winner_list = [] 
     for user in users:
-        winner_list.append(user.mention) # add mentions to the winner list
+        if user.is_bot == False:
+            winner_list.append(user.mention) # add mentions to the winner list
     winner_group = winners.split_prize_pool(rbux_val,winner_list) # split prize pool randomly among winners
     winner_dict = winners.dictize(winner_group) # turn winner prize pairs into dict
     end_embed = hikari.Embed(title="💸💸💸WINNERS!!!💸💸💸",
@@ -80,15 +82,17 @@ async def start_rain(message):
     end_embed.set_footer("CHECK YOUR DM FOR INSTUCTIONS")
     await message.respond(embed=end_embed,user_mentions=True) # message object
     for user in users: #loop thru users
-        await user.send('Respond with your **ROBLOX USERNAME ONLY** in 30 seconds') #send dm to each user who reacted
-        counter +=1 
-        listen_list.append(user.id)
+        if user.is_bot == False:
+            await user.send('Respond with your **ROBLOX USERNAME ONLY** ') #send dm to each user who reacted
+            counter +=1
+            listen_list.append(user.id)
    
     
     #Listen for responses and add to payload for POST request
     @bot.listen(hikari.DMMessageCreateEvent)
     async def get_reply(event): # Listen for reply to dm
         nonlocal counter # make counter usable in nested function
+        nonlocal new_recipients
         
         if event.message.author.id in listen_list: # if author of message is a winner
             try:
@@ -98,8 +102,8 @@ async def start_rain(message):
                                         }) # add robux recipient to list to use to extend recipient payload
                 
             except KeyError:
-                await event.message.author.send("This user is either uneligible for payout **or** spelled incorrectly. Try again.")
-                await event.message.author.send(f'Alternatively, if you **are not** in the group, "{group_info["name"]}" enter one of these users: \n {member_names}')
+                await event.message.author.send("Username is spelled incorrectly. Try again.")
+                await event.message.author.send(f'Alternatively, if you **are not** in the group, **"{group_info["name"]}"** enter one of these users: \n {member_names}')
 
             else:
                 await event.message.author.send("Successfully recieved username!")
@@ -107,7 +111,10 @@ async def start_rain(message):
                 counter -= 1
                 payload["Recipients"].extend(new_recipients) #Add winners to payload
                 payout = rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
-                await event.message.author.send("Successfully paid out robux!")
+                if payout.status_code == 400:
+                    await event.message.author.send("This user is ineligible for payout.")
+                else:
+                    await event.message.author.send("Successfully paid out robux!")
                 new_recipients = []
                 payload["Recipients"] = []
                 
