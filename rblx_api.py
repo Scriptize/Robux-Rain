@@ -1,6 +1,7 @@
 import requests
 
 
+session = requests.Session()
 def rbx_request(method, url, **kwargs): #accepts htp method, api_endpoint, and var args
     request = session.request(method, url, **kwargs) # makes the request
     method = method.lower() 
