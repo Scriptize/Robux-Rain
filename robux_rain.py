@@ -122,8 +122,10 @@ async def start_rain(message):
                     payout = rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
                     if payout.status_code == 400:
                         await event.message.author.send("This user is ineligible for payout.")
+                        await message.respond(event.message.author.mention + " was ineligible for payout.",user_mentions=True)
                     else:
                         await event.message.author.send("Successfully paid out robux!")
+                        await message.respond(event.message.author.mention + " was paid out!",user_mentions=True)
                     new_recipients = []
                     payload["Recipients"] = []
                     
