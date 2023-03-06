@@ -16,10 +16,11 @@ bot = lightbulb.BotApp(token='your token goes here',intents=hikari.Intents.DM_ME
 @lightbulb.command('version', 'responds with current version')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def version(ctx):
-    await ctx.respond("Robux Rain version: 1.3 **ALPHA**")
+    await ctx.respond("Robux Rain version: 1.4 **ALPHA**")
 
 @bot.command()
 @lightbulb.option('amount','how much robux?',type=int, min_value= 1)
+@lightbulb.option('window','how many mins to claim?',type=int, min_value=1)
 @lightbulb.option('time','how many minutes?',type=float, min_value= .5)
 @lightbulb.option('cookie','enter your cookie',type=str)
 @lightbulb.option('groupid','enter your groups ID',type=str)
@@ -74,7 +75,7 @@ async def start_rain(message):
             winner_list.append(user.mention) # add mentions to the winner list
     winner_group = winners.split_prize_pool(rbux_val,winner_list) # split prize pool randomly among winners
     winner_dict = winners.dictize(winner_group) # turn winner prize pairs into dict
-    window_end = datetime.datetime.now() + timedelta(seconds=45)
+    window_end = datetime.datetime.now() + timedelta(minutes=message.options.window)
     end_embed = hikari.Embed(title="💸💸💸WINNERS!!!💸💸💸",
                              description=winner_group + "\n **Claim Window Ends In: ** <t:"+ str(int((time.mktime(window_end.timetuple()))))+ ":R>",
                              color="#4ef500"
@@ -96,11 +97,11 @@ async def start_rain(message):
         run = True
 
         if window_end < datetime.datetime.now(): # If timer already ran out
+            run = False
             await event.message.author.send("Sorry, claim window is closed")
-            print("Done listening!")
             await message.respond("Giveaway Complete!")
             bot.unsubscribe(hikari.DMMessageCreateEvent, get_reply) # Stop listening for responses
-            run = False
+            
 
         if run:    
             if event.message.author.id in listen_list: # if author of message is a winner
@@ -120,17 +121,19 @@ async def start_rain(message):
                     counter -= 1
                     payload["Recipients"].extend(new_recipients) #Add winners to payload
                     payout = rbx_request("POST",f"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts",json=payload) #payout robux
+                    new_recipients = []
+                    payload["Recipients"] = []
                     if payout.status_code == 400:
                         await event.message.author.send("This user is ineligible for payout.")
                         await message.respond(event.message.author.mention + " was ineligible for payout.",user_mentions=True)
                     else:
                         await event.message.author.send("Successfully paid out robux!")
                         await message.respond(event.message.author.mention + " was paid out!",user_mentions=True)
-                    new_recipients = []
-                    payload["Recipients"] = []
+                    
                     
 
-                if counter == 0 or window_end < datetime.datetime.now(): # If everyone responds or timer ran out
+                if counter == 0: # If everyone responds or timer ran out
+                    run = False
                     bot.unsubscribe(hikari.DMMessageCreateEvent, get_reply) # Stop listening for responses
                     await message.respond("Giveaway Complete!")
 
