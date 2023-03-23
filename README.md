@@ -1,5 +1,9 @@
 # Robux Rain
-Robux Rain is a Discord bot that can automate payouts of ROBLOX's virtual currency, "Robux(R$)", using Discord's REST API and Roblox's API endpoints
+Robux Rain is a Discord bot that can automate payouts of ROBLOX's virtual currency, "Robux(R$)", using Discord's REST API and Roblox's API endpoints 
+
+If you fork this repo, run `pip install -r requirements.txt` to install dependencies
+
+If you want to invite Robux_Rain to your Discord server, [click here!](https://discord.com/api/oauth2/authorize?client_id=1006717557006409789&permissions=8&scope=bot)
 
 ## Usage ⚙️
 ` /startrain ` starts a giveaway and takes **4 inputs**:  
