@@ -6,7 +6,7 @@ If you fork this repo, run `pip install -r requirements.txt` to install dependen
 If you want to invite Robux_Rain to your Discord server, [click here!](https://discord.com/api/oauth2/authorize?client_id=1006717557006409789&permissions=8&scope=bot)
 
 ## Usage ⚙️
-` /startrain ` starts a giveaway and takes **4 inputs**:  
+` /startrain ` starts a giveaway and takes **5 inputs**:  
 
 `groupid`: ID of the ROBLOX group robux will be paid out from  
 `cookie`: ROBLOX security cookie of the cmd invoker  
