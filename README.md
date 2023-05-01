@@ -34,6 +34,10 @@ If you want to invite Robux_Rain to your Discord server, [click here!](https://d
 
 ##### Note that it is entirely possible for not all entrees to win; see that 25 entered in the first image, but only 22 won.
 ![image](https://user-images.githubusercontent.com/87991619/223208276-a78fb9b2-c28d-4760-942a-7c9b9463d574.png)
+#### After everyone is paid, the giveaway is concluded and the bot stops listening for dms
+![image](https://user-images.githubusercontent.com/87991619/235398879-cbca1122-bb94-4b16-bc5d-c4f37cd04dce.png)
+
+
 
 ## Developer Notes 📝
 VERSION: v1.4 **Alpha** (Testing)
